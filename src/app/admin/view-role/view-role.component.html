@@ -1,0 +1,68 @@
+<mat-sidenav-container class='sidenavcontainer' hasBackdrop="false">
+  <div style="margin-top: 1%;">
+    <button mat-raised-button color='primary' style='float: right;' (click)="drawer.toggle()">Create Role</button>
+    <h1>Roles</h1>
+  </div>
+  <div>
+    <mat-card style="margin-top: 2%">
+      Demo Card
+    </mat-card>
+  </div>
+  <div>
+    <mat-card style="margin-top: 2%;">
+      Demo Card
+    </mat-card>
+  </div>
+
+  <mat-sidenav class="sidenav" #drawer mode="over" position='end'>
+    <button type="button" mat-button (click)='drawer.toggle()'><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
+    <div style="margin-top: 3%;">
+      <button mat-raised-button color='primary' style='float: right;'>Create</button>
+      <h1>Create Role</h1>
+    </div>
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input matInput>
+        <mat-hint>Name is required</mat-hint>
+      </mat-form-field>
+      <mat-form-field style="margin-top: 3%;" appearance="fill">
+        <mat-label>Select Parent Role</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let role of roles" [value]='role'>
+            {{role}}
+          </mat-option>
+        </mat-select>
+        <mat-hint>Extract Parent Role</mat-hint>
+      </mat-form-field>
+      <br><br>
+      <div>
+        <label><strong>Make this role default? </strong></label>
+        <br>
+        <mat-radio-group>
+          <mat-radio-button value="yes">Yes</mat-radio-button>
+          &nbsp; &nbsp; &nbsp;
+          <mat-radio-button value="no">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <br>
+      <mat-tab-group>
+        <mat-tab label="Content">
+          <mat-checkbox class="example-margin" aria-label="addcard"><strong>Add Card</strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin" aria-label="removecard"><strong>Remove Card</strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin" aria-label="editcard"><strong>Edit Card</strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin" aria-label="deletecard"><strong>Delete Card</strong></mat-checkbox><br>
+        </mat-tab>
+        <mat-tab label="Admin">
+          <mat-checkbox class="example-margin"><strong>Add User </strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin"><strong>Delete User </strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin"><strong>Add Roles </strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin"><strong>Create Role </strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin"><strong>Update Role </strong></mat-checkbox><br>
+          <mat-checkbox class="example-margin"><strong>Delete Role </strong></mat-checkbox><br>
+        </mat-tab>
+      </mat-tab-group>
+
+    </form>
+  </mat-sidenav>
+</mat-sidenav-container>
