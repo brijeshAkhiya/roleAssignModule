@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-view-role',
+  styleUrls: ['./view-role.component.css'],
   templateUrl: './view-role.component.html',
-  styleUrls: ['./view-role.component.css']
 })
 export class ViewRoleComponent implements OnInit {
 
   constructor() { }
-  data = ['Add Card', 'Edit Card', 'Update Card', 'Remove Card'];
-  options = [];
-  selectedData: string[] = ['Add Card', 'Edit Card', 'Update Card'];
-  roles: string[] = ['Admin', 'Consumer', 'Editor', 'Tech Support', 'Guest Contributor', 'Publisher'];
-  ngOnInit() {
+  // data = ['Add Card', 'Edit Card', 'Update Card', 'Remove Card'];
+  public options: any[] = [];
+  // selectedData: string[] = ['Add Card', 'Edit Card', 'Update Card', 'Delete Card'];
+  public roles: string[] = [];
+  public ngOnInit() {
     // this.options.forEach(d => {
     //   this.selectedData.forEach(s => {
     //     if (d.name === s) {
@@ -21,7 +21,6 @@ export class ViewRoleComponent implements OnInit {
     //   });
     // });
   }
-  isChecked(value) {
+  public isChecked(value) {
   }
   }
-
