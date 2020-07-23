@@ -1,16 +1,17 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './../material/material.module';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ViewRoleComponent } from './view-role/view-role.component';
-
-
 
 @NgModule({
   declarations: [ViewRoleComponent],
+  exports: [ViewRoleComponent],
   imports: [
     CommonModule,
-    MaterialModule
+    FormsModule,
+    ReactiveFormsModule,
+    MaterialModule,
   ],
-  exports: [ViewRoleComponent]
 })
 export class AdminModule { }

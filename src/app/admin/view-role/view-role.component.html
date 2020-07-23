@@ -1,24 +1,21 @@
 <mat-sidenav-container class='sidenavcontainer' hasBackdrop="false">
   <div style="margin-top: 1%;">
-    <button mat-raised-button color='primary' style='float: right;' (click)="drawer.toggle()">Create Role</button>
+    <button mat-raised-button color='primary' style='float: right;' (click)="toggleDrawer(drawer)">Create Role</button>
     <h1>Roles</h1>
   </div>
-  <div>
+  <div *ngFor="let item of roles; let i = index">
     <mat-card style="margin-top: 2%">
-      Demo Card
-    </mat-card>
-  </div>
-  <div>
-    <mat-card style="margin-top: 2%;">
-      Demo Card
+      <mat-card-title>{{item.sRoleName}}</mat-card-title>
+      <mat-card-subtitle>
+        {{ item.sPermissions }}
+      </mat-card-subtitle>
     </mat-card>
   </div>
 
   <mat-sidenav class="sidenav" #drawer mode="side" position='end'>
     <div style="margin-top: 3%;">
-      <button mat-raised-button color='primary' style='float: right;'>Create</button>
-
-      <button style="float: left;" type="button" mat-button (click)='drawer.toggle()'>
+      <button mat-raised-button color='primary' (click)='createRole()' style='float: right;'>Create</button>
+      <button style="float: left;" type="button" mat-button (click)='toggleDrawer(drawer)'>
         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
           class="feather feather-x-circle">
@@ -29,17 +26,19 @@
       </button>
       <h1 style="margin-top: 2%;">Create Role</h1>
     </div>
-    <form class="example-form">
+    <form class="example-form" [formGroup]='roleAssignform'>
       <mat-form-field class="example-full-width">
         <mat-label>Name</mat-label>
-        <input matInput>
+        <input type="text" matInput formControlName="sRoleName">
         <mat-hint>Name is required</mat-hint>
       </mat-form-field>
+      <mat-error *ngIf="(this.roleAssignform.controls.sRoleName.errors?.required && this.roleAssignform.controls.sRoleName.dirty) || this.submit" >This Field is required</mat-error>
       <mat-form-field style="margin-top: 3%;" appearance="fill">
         <mat-label>Select Parent Role</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let role of roles" [value]='role'>
-            {{role}}
+        <mat-select [(value)]='selectedParent'>
+          <mat-option>No Selection</mat-option>
+          <mat-option *ngFor="let role of roles" [value]='role.sRoleName'>
+            {{ role.sRoleName }}
           </mat-option>
         </mat-select>
         <mat-hint>Extract Parent Role</mat-hint>
@@ -48,29 +47,26 @@
       <div>
         <label><strong>Make this role default? </strong></label>
         <br>
-        <mat-radio-group>
-          <mat-radio-button value="yes">Yes</mat-radio-button>
+        <mat-radio-group formControlName='sDefaultRole'>
+          <mat-radio-button value="yes">Yes </mat-radio-button>
           &nbsp; &nbsp; &nbsp;
-          <mat-radio-button value="no">No</mat-radio-button>
+          <mat-radio-button value="no">No </mat-radio-button>
         </mat-radio-group>
       </div>
       <br>
       <mat-tab-group>
-        <mat-tab label="Content">
-          <div *ngFor="let d of options">
-            <mat-checkbox  class="example-margin" [checked]="d.value" aria-label="addcard"><strong>{{ d.name }}</strong></mat-checkbox><br>
+        <mat-tab formArrayName='sPermissions' label="Content">
+          <div *ngFor="let d of options$.saAdmin; let i=index">
+            <mat-checkbox [formControlName]='i' [checked]='d.value' class="example-margin" aria-label="addcard"><strong>{{ d.name }}</strong>
+            </mat-checkbox><br>
           </div>
         </mat-tab>
-        <mat-tab label="Admin">
-          <mat-checkbox class="example-margin"><strong>Add User </strong></mat-checkbox><br>
-          <mat-checkbox class="example-margin"><strong>Delete User </strong></mat-checkbox><br>
-          <mat-checkbox class="example-margin"><strong>Add Roles </strong></mat-checkbox><br>
-          <mat-checkbox class="example-margin"><strong>Create Role </strong></mat-checkbox><br>
-          <mat-checkbox class="example-margin"><strong>Update Role </strong></mat-checkbox><br>
-          <mat-checkbox class="example-margin"><strong>Delete Role </strong></mat-checkbox><br>
+        <mat-tab formArrayName='sPermissions' label="Admin">
+          <div *ngFor="let d of options$.saContent; let j=index">
+            <mat-checkbox [formControlName]='j + options$.saAdmin.length' class="example-margin" [checked]='d.value'><strong>{{ d.name }} </strong></mat-checkbox><br>
+          </div>
         </mat-tab>
       </mat-tab-group>
-
     </form>
   </mat-sidenav>
 </mat-sidenav-container>

@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { RoleModuleService } from './shared/role-module.service';
 
 @Component({
   selector: 'app-root',
+  styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'roleassign';
+export class AppComponent implements OnInit {
+  constructor(private roleService: RoleModuleService) { }
+  public title = 'roleassign';
+  ngOnInit() {
+    this.roleService.getPermissions();
+  }
 }
