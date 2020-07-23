@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { RoleModuleService } from './../../shared/role-module.service';
@@ -60,12 +60,12 @@ export class ViewRoleComponent implements OnInit {
     });
   }
 
-  private toggleDrawer(value) {
+  public toggleDrawer(value) {
     this.toggler = value;
     this.toggler.toggle();
   }
 
-  private createRole() {
+  public createRole() {
     this.submit = 1;
     if (this.roleAssignform.valid) {
       this.submit = 0;

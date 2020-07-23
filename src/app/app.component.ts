@@ -9,7 +9,7 @@ import { RoleModuleService } from './shared/role-module.service';
 export class AppComponent implements OnInit {
   constructor(private roleService: RoleModuleService) { }
   public title = 'roleassign';
-  ngOnInit() {
+  public ngOnInit() {
     this.roleService.getPermissions();
   }
 }
