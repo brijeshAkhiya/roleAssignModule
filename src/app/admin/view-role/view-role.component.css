@@ -8,3 +8,6 @@
 .example-full-width {
   width: 100%;
 }
+.edit {
+  float: right;
+}

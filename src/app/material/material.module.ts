@@ -4,7 +4,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -26,6 +28,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatRadioModule,
     MatCheckboxModule,
     MatSnackBarModule,
+    MatMenuModule,
+    MatIconModule,
   ], imports: [
     CommonModule,
     MatTabsModule,
@@ -39,6 +43,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatRadioModule,
     MatCheckboxModule,
     MatSnackBarModule,
+    MatMenuModule,
+    MatIconModule,
   ],
 })
 export class MaterialModule { }

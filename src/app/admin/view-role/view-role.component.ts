@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
 import { RoleModuleService } from './../../shared/role-module.service';
 
 @Component({
@@ -19,7 +18,7 @@ export class ViewRoleComponent implements OnInit {
   public permissions = [];
   public options$: any = [];
   public temp;
-  public roles: Observable<any>;
+  public roles: any[];
   public name = '';
   public toggler;
   public display = false;
@@ -60,6 +59,58 @@ export class ViewRoleComponent implements OnInit {
     });
   }
 
+  public clearData(toggle) {
+    this.roleAssignform.reset();
+    this.selectedParent = '';
+    this.toggleDrawer(toggle);
+  }
+
+  public editRole(id, roleName, parentValue, toggle) {
+    this.toggleDrawer(toggle);
+    this.roleAssignform.controls.sRoleName.setValue(roleName);
+    if (parentValue !== 'undefined') {
+      this.selectedParent = parentValue;
+      this.getSelectedOptions(roleName);
+    } else {
+      this.selectedParent = '';
+      this.getSelectedOptions(roleName);
+    }
+  }
+
+  public deleteRole(id) {
+    console.log(id);
+  }
+
+  public getSelectedOptions(parentValue) {
+    this.options$?.saContent.forEach((ele, values) => {
+      this.options.controls[parseInt(values, 10) + this.options$.saAdmin.length].reset();
+      ele.value = '';
+    });
+    this.options$?.saAdmin.forEach((ele, values) => {
+      ele.value = '';
+      this.options.controls[values].reset();
+    });
+    this.roles.forEach((element, i) => {
+      if (element.sRoleName === parentValue) {
+        // tslint:disable-next-line: forin
+        for (const values in element.sPermissions) {
+          this.options$.saContent.forEach((ele, index) => {
+            if (ele.name === element.sPermissions[values]) {
+              this.options.controls[index + this.options$.saAdmin.length]?.setValue(true);
+              ele.value = true;
+            }
+          });
+          this.options$.saAdmin.forEach((ele, index) => {
+            if (ele.name === element.sPermissions[values]) {
+              this.options.controls[index]?.setValue(true);
+              ele.value = true;
+            }
+          });
+        }
+      }
+    });
+  }
+
   public toggleDrawer(value) {
     this.toggler = value;
     this.toggler.toggle();
@@ -89,6 +140,7 @@ export class ViewRoleComponent implements OnInit {
             duration: 2000,
           });
           this.roleAssignform.reset();
+          this.selectedParent = '';
           this.getData();
         }
         if (res.responseCode === 10003) {
@@ -102,6 +154,7 @@ export class ViewRoleComponent implements OnInit {
             duration: 2000,
           });
           this.roleAssignform.reset();
+          this.selectedParent = '';
         }
       }).catch((err) => console.log(err));
     } else {
@@ -109,7 +162,6 @@ export class ViewRoleComponent implements OnInit {
         this.roleAssignform.reset();
         this.submit = 0;
       }, 1000);
-      console.log((this.roleAssignform.controls.sRoleName.errors?.required && this.roleAssignform.controls.sRoleName.dirty) || this.submit);
     }
   }
 }
