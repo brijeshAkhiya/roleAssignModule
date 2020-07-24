@@ -20,7 +20,7 @@
 
   <mat-sidenav class="sidenav" #drawer mode="over" position='end'>
     <div style="margin-top: 3%;">
-      <button mat-raised-button color='primary' (click)='createRole()' style='float: right;'>Create</button>
+      <button mat-raised-button color='primary' (click)='createRole()' style='float: right;'>{{task}}</button>
       <button style="float: left;" type="button" mat-button (click)='clearData(toggler)'>
         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -30,7 +30,7 @@
           <line x1="9" y1="9" x2="15" y2="15"></line>
         </svg>
       </button>
-      <h1 style="margin-top: 2%;">Create Role</h1>
+      <h1 style="margin-top: 2%;">{{ this.task }} Role</h1>
     </div>
     <form class="example-form" [formGroup]='roleAssignform'>
       <mat-form-field class="example-full-width">
@@ -65,17 +65,15 @@
       <mat-tab-group>
         <mat-tab formArrayName='sPermissions' label="Admin">
           <div *ngFor="let d of options$.saAdmin; let i=index">
-            <mat-checkbox [formControlName]='i' [checked]='d.value' class="example-margin" aria-label="addcard">
+            <mat-checkbox [formControlName]='i' class="example-margin" aria-label="addcard">
               <strong>{{ d.name }}</strong>
             </mat-checkbox><br>
-            {{i}}
           </div>
         </mat-tab>
         <mat-tab formArrayName='sPermissions' label="Content">
           <div *ngFor="let d of options$.saContent; let j=index">
-            <mat-checkbox [formControlName]='j + options$.saAdmin.length' class="example-margin" [checked]='d.value'>
+            <mat-checkbox [formControlName]='j + options$.saAdmin.length' class="example-margin">
               <strong>{{ d.name }} </strong></mat-checkbox><br>
-            {{j + options$.saAdmin.length}}
           </div>
         </mat-tab>
       </mat-tab-group>

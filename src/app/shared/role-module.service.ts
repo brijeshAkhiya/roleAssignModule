@@ -31,14 +31,24 @@ export class RoleModuleService {
       this.permissionSubject.next(this.tempObj);
     });
   }
+
   public getPermissionSubject() {
     return this.permissionSubject.asObservable();
   }
+
   public viewRoles() {
     return this.http.get(`${environment.backendApiUrl}viewrole`);
   }
 
   public createRole(data) {
     return this.http.post(`${environment.backendApiUrl}createrole`, data).toPromise();
+  }
+
+  public updateRole(data) {
+    return this.http.put(`${environment.backendApiUrl}editRole`, data).toPromise();
+  }
+
+  public deleteRole(data) {
+    return this.http.delete(`${environment.backendApiUrl}deleterole/${data}`).toPromise();
   }
 }
