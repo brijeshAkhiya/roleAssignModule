@@ -6,11 +6,18 @@
   <div *ngFor="let item of roles; let i = index">
     <mat-card style="margin-top: 2%">
       <mat-card-title>{{item.sRoleName}}
-        <button class="edit" mat-raised-button [matMenuTriggerFor]="menu"><mat-icon>toc</mat-icon></button>
+        <button class="edit" mat-raised-button [matMenuTriggerFor]="menu">
+          <mat-icon>toc</mat-icon>
+        </button>
         <mat-menu #menu="matMenu">
-          <button (click)='editRole(item._id, item.sRoleName, item.sParent, drawer)' mat-menu-item><mat-icon>create</mat-icon> Edit Role </button>
-          <button (click)='deleteRole(item._id)' mat-menu-item><mat-icon>delete</mat-icon> Delete Role </button>
-        </mat-menu> </mat-card-title>
+          <button (click)='editRole(item._id, item.sRoleName, item.sParent, drawer)' mat-menu-item>
+            <mat-icon>create</mat-icon> Edit Role
+          </button>
+          <button (click)='deleteRole(item._id)' mat-menu-item>
+            <mat-icon>delete</mat-icon> Delete Role
+          </button>
+        </mat-menu>
+      </mat-card-title>
       <mat-card-subtitle>
         {{ item.sPermissions }}
 
@@ -65,16 +72,19 @@
       <mat-tab-group>
         <mat-tab formArrayName='sPermissions' label="Admin">
           <div *ngFor="let d of options$.saAdmin; let i=index">
-            <mat-checkbox [formControlName]='i' class="example-margin" aria-label="addcard">
+            <mat-checkbox (change)='valueChange()' [formControlName]='i' class="example-margin" aria-label="addcard">
               <strong>{{ d }}</strong>
             </mat-checkbox><br>
-          </div>
+          </div><br>
+          <button type="button" mat-raised-button (click)="addaPermissions()">Add admin permission</button>
         </mat-tab>
         <mat-tab formArrayName='sPermissions' label="Content">
           <div *ngFor="let d of options$.saContent; let j=index">
-            <mat-checkbox [formControlName]='j + options$.saAdmin.length' class="example-margin">
+            <mat-checkbox (change)='valueChange()' [formControlName]='j + options$.saAdmin.length'
+              class="example-margin">
               <strong>{{ d }} </strong></mat-checkbox><br>
-          </div>
+          </div><br>
+          <button type="button" mat-raised-button (click)="addcPermissions()">Add content permission</button>
         </mat-tab>
       </mat-tab-group>
     </form>

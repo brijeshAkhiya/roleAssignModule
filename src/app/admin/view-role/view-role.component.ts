@@ -14,12 +14,10 @@ export class ViewRoleComponent implements OnInit {
   public selectedParent; // This is for the dropdown selected value.
   public id = ''; // This is to get the id of the card while editing.
   public task = 'Create'; // This is for which task is going on (Create || Update).
-  public selectedOption; // Which checkboxes are selected
-  public permissions = []; // all the permissions are merged with thier selected value
   public options$: any = []; // All roles with their permissions are stored
   public roles: any[]; // This is to get all permissions to select
   public toggler; // This is to toggle side-nav-bar
-  public sPermissions: any[] = []; // to get the only the name of the selected checkbox.
+  public Permissions: any[] = []; // to get the only the name of the selected checkbox.
 
   public roleAssignform = this.fb.group({
     sDefaultRole: [''],
@@ -31,37 +29,33 @@ export class ViewRoleComponent implements OnInit {
   get options() {
     return this.roleAssignform.get('sPermissions') as FormArray;
   }
-
-  // To get data after creating or updating.
-  public getData() {
-    this.rolesService.getPermissionSubject().subscribe((res) => {
-      this.options$ = res;
+  // To get permissions after adding permissions.
+  public getPermissions() {
+    this.rolesService.getPermissions().subscribe((res: any) => {
+      if (res.data.length !== 0) {
+        this.options$.saAdmin = [...res?.data.saAdmin];
+        this.options$.saContent = [...res?.data.saContent];
+        [...this.options$?.saAdmin, ...this.options$?.saContent].forEach((element) => {
+          this.options.push(this.fb.control(''));
+        });
+      }
     });
+  }
+  // To get data roles creating or updating.
+  public getRoles() {
     this.rolesService.viewRoles().subscribe((res: any) => {
-      this.roles = res.data;
+      this.roles = [...res.data];
     });
   }
 
   public ngOnInit() {
-    this.rolesService.getPermissionSubject().subscribe((res) => {
-      this.options$ = res;
-      console.log(res);
-      if (res.length !== 0 || res !== undefined) {
-        // tslint:disable-next-line: forin
-        for (const values in res.saAdmin) {
-          this.options.push(this.fb.control(''));
-        }
-        // tslint:disable-next-line: forin
-        for (const values in res.saContent) {
-          this.options.push(this.fb.control(''));
-        }
-      }
-    });
-    this.rolesService.viewRoles().subscribe((res: any) => {
-      this.roles = res.data;
-    });
+    this.getRoles();
+    this.getPermissions();
   }
 
+  public valueChange() {
+    this.selectedParent = '';
+  }
   // To clear selected values and form values after closing the side-nav-bar.
   public clearData(toggle) {
     this.task = 'Create';
@@ -70,13 +64,79 @@ export class ViewRoleComponent implements OnInit {
     this.toggleDrawer(toggle);
   }
 
-  public updateRole() {
-    this.sPermissions = [];
-    this.permissions = this.options$.saAdmin.concat(this.options$.saContent);
-    this.selectedOption = this.permissions.filter((element, index) => !!this.roleAssignform.value.sPermissions[index]);
-    this.selectedOption.forEach((element) => {
-      this.sPermissions.push(element.name);
-    });
+  public addcPermissions() {
+    const value = prompt('Add permission (note): No Spaces allowed use \'_\' instead');
+    if (value !== '') {
+      if ([...value].indexOf(' ') === -1) {
+        this.rolesService.addPermissions({ saContent: value })
+          .then((response: any) => {
+            if (response.status) {
+              this.snackBar.open(response.message, 'Okay', {
+                duration: 2000,
+              });
+              this.roleAssignform.reset();
+              this.selectedParent = '';
+              this.getRoles();
+              this.getPermissions();
+              this.task = 'Create';
+            } else if (response.error) {
+              this.snackBar.open(response.error, 'Okay', {
+                duration: 2000,
+              });
+            } else {
+              this.snackBar.open(response.message, 'Okay', {
+                duration: 2000,
+              });
+            }
+          })
+          .catch();
+      } else {
+        alert('There should be no space');
+        this.addcPermissions();
+      }
+    } else {
+      alert('Please enter value');
+      this.addcPermissions();
+    }
+  }
+
+  public addaPermissions() {
+    const value = prompt('Add permission (note): No Spaces allowed use \'_\' instead');
+    if (value !== '') {
+      if ([...value].indexOf(' ') === -1) {
+        this.rolesService.addPermissions({ saAdmin: value })
+          .then((response: any) => {
+            if (response.status) {
+              this.snackBar.open(response.message, 'Okay', {
+                duration: 2000,
+              });
+              this.roleAssignform.reset();
+              this.selectedParent = '';
+              this.getPermissions();
+              this.getRoles();
+              this.task = 'Create';
+            } else if (response.error) {
+              this.snackBar.open(response.error, 'Okay', {
+                duration: 2000,
+              });
+            } else {
+              this.snackBar.open(response.message, 'Okay', {
+                duration: 2000,
+              });
+            }
+          })
+          .catch(() => {
+            alert('Something Went Wrong!!, please try again later');
+            this.addaPermissions();
+          });
+      } else {
+        alert('There should be no space');
+        this.addaPermissions();
+      }
+    } else {
+      alert('Please enter value');
+      this.addaPermissions();
+    }
   }
 
   public editRole(id, roleName, parentValue, toggle) {
@@ -84,7 +144,7 @@ export class ViewRoleComponent implements OnInit {
     this.toggleDrawer(toggle);
     this.task = 'Update';
     this.roleAssignform.controls.sRoleName.setValue(roleName);
-    if (parentValue !== 'undefined' || parentValue === '') {
+    if (parentValue) {
       this.selectedParent = parentValue;
       this.getSelectedOptions(roleName);
     } else {
@@ -102,10 +162,9 @@ export class ViewRoleComponent implements OnInit {
           });
           this.roleAssignform.reset();
           this.selectedParent = '';
-          this.getData();
+          this.getRoles();
           this.task = 'Create';
         } else {
-          console.log(result);
           this.snackBar.open(result.message, 'Okay', {
             duration: 2000,
           });
@@ -138,19 +197,18 @@ export class ViewRoleComponent implements OnInit {
 
   public createRole() {
     this.submit = 1;
-    this.sPermissions = [];
+    this.Permissions = [];
     if (this.roleAssignform.valid) {
-      console.log(this.roleAssignform.value);
       this.submit = 0;
-      this.permissions = this.options$.saAdmin.concat(this.options$.saContent);
-      this.selectedOption = this.permissions.filter((element, index) => !!this.roleAssignform.value.sPermissions[index]);
-      this.selectedOption.forEach((element) => {
-        this.sPermissions.push(element);
-      });
+      [...this.options$.saAdmin, ...this.options$.saContent]
+        .filter((element, index) => !!this.roleAssignform.value.sPermissions[index])
+        .forEach((element) => {
+          this.Permissions.push(element);
+        });
       const formData = new FormData();
       formData.append('sRoleName', this.roleAssignform.controls.sRoleName.value);
       formData.append('sParent', this.selectedParent);
-      formData.append('sPermissions', JSON.stringify(this.sPermissions));
+      formData.append('sPermissions', JSON.stringify(this.Permissions));
       const obj = {};
       formData.forEach((value, key) => {
         obj[key] = value;
@@ -164,7 +222,7 @@ export class ViewRoleComponent implements OnInit {
             });
             this.roleAssignform.reset();
             this.selectedParent = '';
-            this.getData();
+            this.getRoles();
           }
           if (res.responseCode === 10003) {
             this.snackBar.open(res.message, 'Okay', {
@@ -174,6 +232,13 @@ export class ViewRoleComponent implements OnInit {
           if (res.responseCode === 10005) {
             this.toggler.toggle();
             this.snackBar.open(res.message, 'Okay', {
+              duration: 2000,
+            });
+            this.roleAssignform.reset();
+            this.selectedParent = '';
+          }
+          if (res.error) {
+            this.snackBar.open(res.error, 'Okay', {
               duration: 2000,
             });
             this.roleAssignform.reset();
@@ -194,8 +259,14 @@ export class ViewRoleComponent implements OnInit {
               });
               this.roleAssignform.reset();
               this.selectedParent = '';
-              this.getData();
+              this.getRoles();
               this.task = 'Create';
+            } else if (result.error) {
+              this.snackBar.open(result.message, 'Okay', {
+                duration: 2000,
+              });
+              this.roleAssignform.reset();
+              this.selectedParent = '';
             } else {
               this.snackBar.open(result.message, 'Okay', {
                 duration: 2000,

@@ -7,21 +7,10 @@ import { environment } from './../../environments/environment.prod';
   providedIn: 'root',
 })
 export class RoleModuleService {
-  public permissionSubject: BehaviorSubject<any> = new BehaviorSubject([]);
-  public ApiUrl: string;
-  public tempObj: any = {};
-  public tempArr = [];
-  public saAdmin = [];
-  public saContent = [];
+  // public permissionSubject: BehaviorSubject<any> = new BehaviorSubject([]);
   constructor(private http: HttpClient) { }
   public getPermissions() {
-    this.http.get(`${environment.backendApiUrl}getpermissions`).subscribe((res: any) => {
-      this.permissionSubject.next(res.data);
-    });
-  }
-
-  public getPermissionSubject() {
-    return this.permissionSubject.asObservable();
+    return this.http.get(`${environment.backendApiUrl}getpermissions`);
   }
 
   public viewRoles() {
@@ -38,5 +27,9 @@ export class RoleModuleService {
 
   public deleteRole(data) {
     return this.http.delete(`${environment.backendApiUrl}deleterole/${data}`).toPromise();
+  }
+
+  public addPermissions(data) {
+    return this.http.put(`${environment.backendApiUrl}addpermissions`, data).toPromise();
   }
 }
