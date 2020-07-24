@@ -16,19 +16,7 @@ export class RoleModuleService {
   constructor(private http: HttpClient) { }
   public getPermissions() {
     this.http.get(`${environment.backendApiUrl}getpermissions`).subscribe((res: any) => {
-      res.data[0].saAdmin.forEach((element) => {
-        this.tempObj = { name: element, value: false };
-        this.saAdmin.push(this.tempObj);
-        this.tempObj = {};
-      });
-      res.data[0].saContent.forEach((element) => {
-        this.tempObj = { name: element, value: false };
-        this.saContent.push(this.tempObj);
-        this.tempObj = {};
-      });
-      this.tempObj.saAdmin = this.saAdmin;
-      this.tempObj.saContent = this.saContent;
-      this.permissionSubject.next(this.tempObj);
+      this.permissionSubject.next(res.data);
     });
   }
 

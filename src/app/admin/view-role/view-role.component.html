@@ -66,14 +66,14 @@
         <mat-tab formArrayName='sPermissions' label="Admin">
           <div *ngFor="let d of options$.saAdmin; let i=index">
             <mat-checkbox [formControlName]='i' class="example-margin" aria-label="addcard">
-              <strong>{{ d.name }}</strong>
+              <strong>{{ d }}</strong>
             </mat-checkbox><br>
           </div>
         </mat-tab>
         <mat-tab formArrayName='sPermissions' label="Content">
           <div *ngFor="let d of options$.saContent; let j=index">
             <mat-checkbox [formControlName]='j + options$.saAdmin.length' class="example-margin">
-              <strong>{{ d.name }} </strong></mat-checkbox><br>
+              <strong>{{ d }} </strong></mat-checkbox><br>
           </div>
         </mat-tab>
       </mat-tab-group>

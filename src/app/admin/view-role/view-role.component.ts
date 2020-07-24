@@ -45,6 +45,7 @@ export class ViewRoleComponent implements OnInit {
   public ngOnInit() {
     this.rolesService.getPermissionSubject().subscribe((res) => {
       this.options$ = res;
+      console.log(res);
       if (res.length !== 0 || res !== undefined) {
         // tslint:disable-next-line: forin
         for (const values in res.saAdmin) {
@@ -121,23 +122,13 @@ export class ViewRoleComponent implements OnInit {
   // To get selected option
   public getSelectedOptions(parentValue) {
     this.options.reset();
-    this.roles.forEach((element, i) => {
-      if (element.sRoleName === parentValue) {
-        // tslint:disable-next-line: forin
-        for (const values in element.sPermissions) {
-          this.options$.saContent.forEach((ele, index) => {
-            if (ele.name === element.sPermissions[values]) {
-              this.options.controls[index + this.options$.saAdmin.length]?.setValue(true);
-            }
-          });
-          this.options$.saAdmin.forEach((ele, index) => {
-            if (ele.name === element.sPermissions[values]) {
-              this.options.controls[index]?.setValue(true);
-            }
-          });
-        }
-      }
-    });
+    if (parentValue) {
+      const select = this.roles.find((element) => element?.sRoleName === parentValue);
+      select.sPermissions.forEach((element, values) => {
+        this.options.controls[this.options$?.saContent.findIndex((ele) => ele === element) + this.options$.saAdmin.length]?.setValue(true);
+        this.options.controls[this.options$?.saAdmin.findIndex((ele) => ele === element)]?.setValue(true);
+      });
+    }
   }
 
   public toggleDrawer(value) {
@@ -154,7 +145,7 @@ export class ViewRoleComponent implements OnInit {
       this.permissions = this.options$.saAdmin.concat(this.options$.saContent);
       this.selectedOption = this.permissions.filter((element, index) => !!this.roleAssignform.value.sPermissions[index]);
       this.selectedOption.forEach((element) => {
-        this.sPermissions.push(element.name);
+        this.sPermissions.push(element);
       });
       const formData = new FormData();
       formData.append('sRoleName', this.roleAssignform.controls.sRoleName.value);
