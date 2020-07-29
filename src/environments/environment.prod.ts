@@ -1,4 +1,4 @@
 export const environment = {
-  backendApiUrl: 'https://role-assign.herokuapp.com/',
+  backendApiUrl: 'http://35.238.52.176:3000/',
   production: true,
 };

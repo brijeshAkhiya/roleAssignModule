@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  backendApiUrl: 'https://role-assign.herokuapp.com/',
+  // backendApiUrl: 'https://role-assign.herokuapp.com/',
+  backendApiUrl: 'http://35.238.52.176:3000/',
   production: false,
 };
 
